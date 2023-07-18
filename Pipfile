@@ -9,7 +9,6 @@ numpy = "*"
 openpyxl = "*"
 plotly.express = "*"
 matplotlib.pyplot = "*"
-urllib.request = "*"
 
 [dev-packages]
 
