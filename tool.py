@@ -59,7 +59,7 @@ bio_gas_stove=["Biogas (2 burner)"]
 grid_electricity_stove=["Electric Induction (1 burner)", "Electric Induction (2 burner)", "Electric Pressure Cooker"]
 microgrid_electricity_stove=["Electric Induction (1 burner)", "Electric Induction (2 burner)", "Electric Pressure Cooker"]
 
-tab1, tab2 = st.tabs(["Basic Settings", "Further Information"])
+tab1, tab2 = st.tabs(["User Selection", "Further Information"])
 with tab2:
     with st.expander('More about electric induction and its benefits'):
         st.markdown("""
@@ -67,7 +67,7 @@ with tab2:
             * **Precise temperature control:** Induction cooktops offer precise temperature control, which is ideal for delicate dishes or when you need to simmer something for a long period of time.
             * **Efficiency:** Induction cooktops are very efficient, meaning they use less energy than traditional cooktops. This can save you money on your energy bills.
             * **Safety:** Induction cooktops are very safe. There is no open flame or hot surface, so there is less risk of burns or fire.
-            * **Easy cleanup:** Induction cooktops are very easy to clean. The smooth surface of the cooktop makes it easy to wipe down, and there are no spills or splatters to worry about.
+            * **Easy cleaning:** Induction cooktops are very easy to clean. The smooth surface of the cooktop makes it easy to wipe down, and there are no spills or splatters to worry about.
             """ )
 
     st.subheader("Meal Energy Consumption")
@@ -85,34 +85,32 @@ with tab2:
     'Capex (INR)': ['0','INR 750 to INR 900','INR 1000','INR 40,000 to INR 60,000','INR 1,100 to INR 2,500',
                     'INR 1,000 to INR 2,000','INR 1,000 to INR 2,900','INR 2,000 to INR 5,800','INR 5,000 to INR 10,000']
     }
-
-    # stove_char_df = pd.DataFrame(stove_char, index = False)
     stove_char_df = pd.DataFrame(stove_char)
+    stove_char_df = stove_char_df.set_index('Stove Type')
     st.dataframe(stove_char_df)
-    
     
     st.subheader("Carbon Emission Factors")
     carbon_ef = {
     'Fuel Type': ['Firewood','Livestock Waste','Biogas','LPG','PNG','Grid electricity','Solar PV rooftop'],
     'Unit Carbon Emission (kgCO2eq./kWh)': [0.4, 0.4, 0.15, 0.23, 0.2, 0.72, 0],
     }
-
     carbon_ef_df = pd.DataFrame(carbon_ef)
+    carbon_ef_df = carbon_ef_df.set_index('Fuel Type')
     st.dataframe(carbon_ef_df)
-
     
     st.subheader("Statewise Grid Electricity Tariff of Indian States")
-    st.dataframe(electricity_tariff_file.iloc[:,[1,2,3,4]])
+    el_tariff_rates = pd.DataFrame(electricity_tariff_file.iloc[:,[0,1,2,3,4]])
+    el_tariff_rates = el_tariff_rates.set_index("State")
+    st.dataframe(el_tariff_rates)
     
     st.subheader("Daily IHAP")
     ihap = {
     'Stove Type': ['Traditional cook stove (TCS)','Improved cook stove (ICS - Natural)','Improved cook stove (ICS - Forced)',
-                   'Biogas (2 burner)','PNG (2 burner)','LPG (2 burner)','Electric Induction','Electric Pressure Cooker'
-    ],
+                   'Biogas (2 burner)','PNG (2 burner)','LPG (2 burner)','Electric Induction','Electric Pressure Cooker'],
     'Daily IHAP - PM 2.5 (μg/m3)': [1230, 410, 165, 60, 47, 64, 47, 35],
     }
-
     ihap_df = pd.DataFrame(ihap)
+    ihap_df = ihap_df.set_index("Stove Type")
     st.dataframe(ihap_df)
     
     st.subheader('Annual Income of HH')
@@ -122,6 +120,7 @@ with tab2:
     'Annual Income (INR)': ['₹ 2,00,000','₹ 5,70,000','₹ 9,00,000','₹ 2,50,000','₹ 7,12,500','₹ 11,25,000']
     }
     income_df = pd.DataFrame(income)
+    income_df = income_df.set_index('Area Type')
     st.dataframe(income_df)
 
 with tab1:
@@ -762,85 +761,88 @@ with tab1:
             # with c6:
             #     st.metric('Firewood', f"₹{(current_cost_annual - Fire_Wood_cost_annual):,.0f}",)
 
-            with st.container():
-                # Sample data
-                data = {
-                    'Unit cost (INR/kWh)': [(current_cost/total_energy_user)/30, electricity_tariff, 0, 6.38, 5.86, 1.5,1.32],
-                    'Total operating cost for cooking (INR/month)': [f"{current_cost:,.0f}", f"{Grid_electricity_cost:,.0f}", f"{Solar_rooftop_cost:,.0f}",
-                                                                    f"{LPG_cost:,.0f}", f"{PNG_cost:,.0f}", f"{Biogas_cost:,.0f}", f"{firewood_livestock_cost_average:,.0f}"],
-                    'Percentage of cooking expenses with monthly income (%)': [f"{(current_cost/monthly_income):,.2%}", f"{(Grid_electricity_cost/monthly_income):,.2%}", 
-                                                                            f"{(Solar_rooftop_cost/monthly_income):,.2%}", f"{(LPG_cost/monthly_income):,.2%}", 
-                                                                            f"{(PNG_cost/monthly_income):,.2%}", f"{(Biogas_cost/monthly_income):,.2%}", 
-                                                                            f"{(firewood_livestock_cost_average/monthly_income):,.2%}"],
-                    'Daily cooking duration (hours/day)': [f"{current_time_daily:,.2f}", f"{Grid_electricity_time:,.2f}", f"{Solar_rooftop_time:,.2f}", 
-                                                        f"{LPG_time:,.2f}", f"{PNG_time:,.2f}", f"{Biogas_time:,.2f}", f"{firewood_livestock_time:,.2f}"],
-                    'Daily energy consumption for cooking (kWh/day)': [f"{total_energy:,.2f}", f"{Grid_electricity_consumption_KWH:.2f}", f"{Solar_rooftop_consumption_kwh:.2f}", 
-                                                                f"{LPG_consumption_kwh:,.2f}",f"{PNG_CONSUMPTON_KWH:.2f}", f"{Biogas_CONSUMPTION_KWH:.2f}", f"{Fire_Wood_consumption_KWH:.2f}"],
-                    'Thermal efficiency (%)': ['-',f"{Grid_electricity_efficiency:,.0%}", f"{Solar_rooftop_efficiency:,.0%}", f"{LPG_efficiency:,.0%}", 
-                                            f"{PNG_efficiency:,.0%}", f"{Biogas_efficiency:,.0%}", f"{Firewood_efficiency:,.0%}"],
-                    'Cookstove and equipment cost (INR)': ['NA',f"{Grid_electricity_capex:,.0f}", f"{Solar_rooftop_capex:,.0f}", f"{LPG_capex:,.0f}", f"{PNG_capex:,.0f}",
-                                                        f"{Biogas_capex:,.0f}",  f"{Firewood_capex:,.0f}"],
-                    'Unit carbon emission (kgCO2eq./kWh)' : [f"{present_EF:.2f}", f"{Grid_electricity_emission:.2f}", f"{Solar_rooftop_emission:.2f}", f"{LPG_emission:.2f}", 
-                                                            f"{PNG_emission:.2f}", f"{Biogas_emission:.2f}", f"{firewood_livestock_emission:.2f}"],
-                    'Annual carbon emission (kgCO2eq./year)' : [f"{total_emissions_annual:.2f}", f"{Grid_electricity_emission_annual:.2f}", f"{Solar_rooftop_emission_annual:.2f}", 
-                                                                f"{LPG_emission_annual:.2f}", f"{PNG_emission_annual:.2f}", f"{Biogas_emission_annual:.2f}", f"{firewood_livestock_emission_annual:.2f}"],
-                    'Social carbon cost (INR/year)' : [f"{(total_emissions_annual * social_carbon_cost):,.0f}",  f"{Grid_electricity_emission_annual * social_carbon_cost:,.0f}",
-                                                        f"{Solar_rooftop_emission_annual * social_carbon_cost:,.0f}",  f"{LPG_emission_annual * social_carbon_cost:,.0f}",
-                                                            f"{PNG_emission_annual * social_carbon_cost:,.0f}",  f"{Biogas_emission_annual * social_carbon_cost:,.0f}",
-                                                                f"{firewood_livestock_emission_annual * social_carbon_cost:,.0f}"],
-                    'Daily IHAP [PM 2.5] (μg/m3)' : ['NA', f"{Grid_electricity_ihap:,.0f}",  f"{Solar_rooftop_ihap:,.0f}",  f"{LPG_ihap:,.0f}",  f"{PNG_ihap:,.0f}",
-                                                    f"{Biogas_ihap:,.0f}",  f"{firewood_livestock_ihap:,.0f}"],
+        with st.container():
+            # Sample data
+            data = {
+                'Unit cost (INR/kWh)': [(current_cost/total_energy_user)/30, electricity_tariff, 0, 6.38, 5.86, 1.5,1.32],
+                'Total operating cost for cooking (INR/month)': [f"{current_cost:,.0f}", f"{Grid_electricity_cost:,.0f}", f"{Solar_rooftop_cost:,.0f}",
+                                                                f"{LPG_cost:,.0f}", f"{PNG_cost:,.0f}", f"{Biogas_cost:,.0f}", f"{firewood_livestock_cost_average:,.0f}"],
+                'Percentage of cooking expenses with monthly income (%)': [f"{(current_cost/monthly_income):,.2%}", f"{(Grid_electricity_cost/monthly_income):,.2%}", 
+                                                                        f"{(Solar_rooftop_cost/monthly_income):,.2%}", f"{(LPG_cost/monthly_income):,.2%}", 
+                                                                        f"{(PNG_cost/monthly_income):,.2%}", f"{(Biogas_cost/monthly_income):,.2%}", 
+                                                                        f"{(firewood_livestock_cost_average/monthly_income):,.2%}"],
+                'Daily cooking duration (hours/day)': [f"{current_time_daily:,.2f}", f"{Grid_electricity_time:,.2f}", f"{Solar_rooftop_time:,.2f}", 
+                                                    f"{LPG_time:,.2f}", f"{PNG_time:,.2f}", f"{Biogas_time:,.2f}", f"{firewood_livestock_time:,.2f}"],
+                'Daily energy consumption for cooking (kWh/day)': [f"{total_energy:,.2f}", f"{Grid_electricity_consumption_KWH:.2f}", f"{Solar_rooftop_consumption_kwh:.2f}", 
+                                                            f"{LPG_consumption_kwh:,.2f}",f"{PNG_CONSUMPTON_KWH:.2f}", f"{Biogas_CONSUMPTION_KWH:.2f}", f"{Fire_Wood_consumption_KWH:.2f}"],
+                'Thermal efficiency (%)': ['-',f"{Grid_electricity_efficiency:,.0%}", f"{Solar_rooftop_efficiency:,.0%}", f"{LPG_efficiency:,.0%}", 
+                                        f"{PNG_efficiency:,.0%}", f"{Biogas_efficiency:,.0%}", f"{Firewood_efficiency:,.0%}"],
+                'Cookstove and equipment cost (INR)': ['NA',f"{Grid_electricity_capex:,.0f}", f"{Solar_rooftop_capex:,.0f}", f"{LPG_capex:,.0f}", f"{PNG_capex:,.0f}",
+                                                    f"{Biogas_capex:,.0f}",  f"{Firewood_capex:,.0f}"],
+                'Unit carbon emission (kgCO2eq./kWh)' : [f"{present_EF:.2f}", f"{Grid_electricity_emission:.2f}", f"{Solar_rooftop_emission:.2f}", f"{LPG_emission:.2f}", 
+                                                        f"{PNG_emission:.2f}", f"{Biogas_emission:.2f}", f"{firewood_livestock_emission:.2f}"],
+                'Annual carbon emission (kgCO2eq./year)' : [f"{total_emissions_annual:.2f}", f"{Grid_electricity_emission_annual:.2f}", f"{Solar_rooftop_emission_annual:.2f}", 
+                                                            f"{LPG_emission_annual:.2f}", f"{PNG_emission_annual:.2f}", f"{Biogas_emission_annual:.2f}", f"{firewood_livestock_emission_annual:.2f}"],
+                'Social carbon cost (INR/year)' : [f"{(total_emissions_annual * social_carbon_cost):,.0f}",  f"{Grid_electricity_emission_annual * social_carbon_cost:,.0f}",
+                                                    f"{Solar_rooftop_emission_annual * social_carbon_cost:,.0f}",  f"{LPG_emission_annual * social_carbon_cost:,.0f}",
+                                                        f"{PNG_emission_annual * social_carbon_cost:,.0f}",  f"{Biogas_emission_annual * social_carbon_cost:,.0f}",
+                                                            f"{firewood_livestock_emission_annual * social_carbon_cost:,.0f}"],
+                'Daily IHAP [PM 2.5] (μg/m3)' : ['NA', f"{Grid_electricity_ihap:,.0f}",  f"{Solar_rooftop_ihap:,.0f}",  f"{LPG_ihap:,.0f}",  f"{PNG_ihap:,.0f}",
+                                                f"{Biogas_ihap:,.0f}",  f"{firewood_livestock_ihap:,.0f}"],
 
-                    'Annual opex savings (INR)' : ['NA', f"{(current_cost_annual - Grid_electricity_cost_annual):,.0f}",  f"{(current_cost_annual - Solar_rooftop_cost_annual):,.0f}",
-                                                    f"{(current_cost_annual - LPG_cost_annual):,.0f}",  f"{(current_cost_annual - PNG_cost_annual):,.0f}",  f"{(current_cost_annual - Biogas_cost_annual):,.0f}",
-                                                        f"{(current_cost_annual - Fire_Wood_cost_annual):,.0f}"],
-                    # 'Payback period (years)' : ['NA',f"{Grid_electricity_pbp:,.0f}", f"{Solar_rooftop_pbp:,.0f}", f"{LPG_pbp:,.0f}",  f"{PNG_pbp:,.0f}",  f"{Biogas_pbp:,.0f}",
-                                                #   f"{Firewood_pbp:,.0f}"],
-                    'Payback period (years)': ['NA','NA' if Grid_electricity_pbp > 15 else f"{Grid_electricity_pbp:,.2f}",
-                                    'NA' if Solar_rooftop_pbp > 15 else f"{Solar_rooftop_pbp:,.2f}",
-                                    'NA' if LPG_pbp > 15 else f"{LPG_pbp:,.2f}",
-                                    'NA' if PNG_pbp > 15 else f"{PNG_pbp:,.2f}",
-                                    'NA' if Biogas_pbp > 15 else f"{Biogas_pbp:,.2f}",
-                                    'NA' if Firewood_pbp > 15 else f"{Firewood_pbp:,.2f}"]
-                }
-                df = pd.DataFrame(data)
+                'Annual opex savings (INR)' : ['NA', f"{(current_cost_annual - Grid_electricity_cost_annual):,.0f}",  f"{(current_cost_annual - Solar_rooftop_cost_annual):,.0f}",
+                                                f"{(current_cost_annual - LPG_cost_annual):,.0f}",  f"{(current_cost_annual - PNG_cost_annual):,.0f}",  f"{(current_cost_annual - Biogas_cost_annual):,.0f}",
+                                                    f"{(current_cost_annual - Fire_Wood_cost_annual):,.0f}"],
+                # 'Payback period (years)' : ['NA',f"{Grid_electricity_pbp:,.0f}", f"{Solar_rooftop_pbp:,.0f}", f"{LPG_pbp:,.0f}",  f"{PNG_pbp:,.0f}",  f"{Biogas_pbp:,.0f}",
+                                            #   f"{Firewood_pbp:,.0f}"],
+                'Payback period (years)': ['NA','NA' if Grid_electricity_pbp > 15 else f"{Grid_electricity_pbp:,.2f}",
+                                'NA' if Solar_rooftop_pbp > 15 else f"{Solar_rooftop_pbp:,.2f}",
+                                'NA' if LPG_pbp > 15 else f"{LPG_pbp:,.2f}",
+                                'NA' if PNG_pbp > 15 else f"{PNG_pbp:,.2f}",
+                                'NA' if Biogas_pbp > 15 else f"{Biogas_pbp:,.2f}",
+                                'NA' if Firewood_pbp > 15 else f"{Firewood_pbp:,.2f}"]
+            }
+            df = pd.DataFrame(data)
 
-                # Available variables for x and y
-                available_variables = list(df.columns)
+            # Available variables for x and y
+            available_variables = list(df.columns)
 
-                # Select x and y variables
-                x_variable =['Present - '+str(selection_of_stoves),'Electric Induction', 'Solar Induction', 'LPG', 'PNG', 'Biogas','Firewood']
-                y_variable = st.selectbox('**Select a parameter**', available_variables)
-                df['cooking stoves']=x_variable
-                # Filter DataFrame based on selected x_variable and y_variable
+            # Select x and y variables
+            x_variable =['Present - '+str(selection_of_stoves),'Electric Induction', 'Solar Induction', 'LPG', 'PNG', 'Biogas','Firewood']
+            y_variable = st.selectbox('**Select a parameter**', available_variables)
+            df['cooking stoves']=x_variable
+            # Filter DataFrame based on selected x_variable and y_variable
 
-                c1,c2= st.columns([5,3],gap="small")
-                    # Generate bar plot
-                    # Generate bar plot using Plotly
-                with c1:
-                    fig = px.bar(df, x='cooking stoves', y=y_variable)
+            c1,c2= st.columns([5,3],gap="small")
+                # Generate bar plot
+                # Generate bar plot using Plotly
+            with c1:
+                fig = px.bar(df, x='cooking stoves', y=y_variable)
 
-                    # Rotate x-axis labels by 45 degrees
-                    fig.update_layout(xaxis_tickangle = -45)
+                # Rotate x-axis labels by 45 degrees
+                fig.update_layout(xaxis_tickangle = -45)
 
-                    # Add tooltips for each bar
-                    fig.update_traces(hovertemplate = 'Value: %{y}')
+                # Add tooltips for each bar
+                fig.update_traces(hovertemplate = 'Value: %{y}')
 
-                    # Set x-axis label 
-                    fig.update_layout(xaxis_title = 'Cooking Fuel')
-                    # Set y-axis label
-                    fig.update_layout(yaxis_title = y_variable)
+                # Set x-axis label 
+                fig.update_layout(xaxis_title = 'Cooking Fuel')
+                # Set y-axis label
+                fig.update_layout(yaxis_title = y_variable)
 
-                    st.plotly_chart(fig)
-                with c2:
-                    df_filtered = df[['cooking stoves', y_variable]].copy()
-                    df_filtered.rename(columns={'cooking stoves': 'Cooking Fuel'}, inplace=True)
-                    # df_filtered['cooking stoves'] = x_variable
-                    df_filtered.reset_index()
-                    df_filtered = df_filtered.set_index('Cooking Fuel')
-                    # Display DataFrame as a table
-                    st.dataframe(df_filtered)
+                st.plotly_chart(fig)
+            with c2:
+                df_filtered = df[['cooking stoves', y_variable]].copy()
+                df_filtered.rename(columns={'cooking stoves': 'Cooking Fuel'}, inplace=True)
+                # df_filtered['cooking stoves'] = x_variable
+                df_filtered.reset_index()
+                df_filtered = df_filtered.set_index('Cooking Fuel')
+                # Display DataFrame as a table
+                st.dataframe(df_filtered)
 
-                    # Save DataFrame as CSV
-                    csv_data = df_filtered.to_csv(index=True)
-                    st.download_button("Download CSV", data=csv_data, file_name="filtered_data.csv", mime="text/csv")
+                # Save DataFrame as CSV
+                csv_data = df_filtered.to_csv(index=True)
+                st.download_button("Download CSV", data=csv_data, file_name="filtered_data.csv", mime="text/csv")
+
+        # else:
+        #     st.write('Refresh Page')
