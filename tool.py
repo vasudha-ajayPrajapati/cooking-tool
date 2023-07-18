@@ -10,6 +10,9 @@ import matplotlib.pyplot as plt
 #from helper import generate_df, make_stacked_bar_horiz
 from PIL import Image
 import plotly.express as px
+import urllib.request
+import io
+# from io import BytesIO
 
 #import file 
 energy_cooking = pd.read_excel('cooking_energy.xlsx',sheet_name='cooking energy',index_col=(0))
@@ -26,7 +29,10 @@ about_markdown = 'This app has been developed by Vasudha Foundation.\n' + \
 st.set_page_config(layout="wide", menu_items={'Get Help': None, 'Report a Bug': None, 'About': about_markdown})
 
 #___________Main page__________________________________________
-img = Image.open('Vasudha_Logo_PNG.PNG') # Load the image
+image_url = 'https://github.com/gitbik/cooking-tool/blob/main/Vasudha_Logo_PNG.png?raw=true'
+image_data = urllib.request.urlopen(image_url).read()
+img = Image.open(io.BytesIO(image_data))
+# img = Image.open('Vasudha_Logo_PNG.PNG') # Load the image
 resized_img = img.resize((300, 300))  # Adjust the width and height as needed
 col1, col2 = st.columns([1,6]) # Create two columns
 
