@@ -71,8 +71,9 @@ with tab2:
             """ )
 
     st.subheader("Meal Energy Consumption")
-    st.markdown('The meal energy consumption assumptions are provided in the following.' 
-                + ' Please note the values mentioned are considered for a household comprising of 4 to 5 persons.')
+    st.markdown('The meal energy consumption assumptions for electric cooking are provided in the following table.' 
+                + ' Please note the values mentioned are considered for a household comprising of 4 to 5 persons.'
+                + ' The meal energy consumption for other cooking fuels have been estimated based on the thermal efficiency mentioned below.')
     st.dataframe(energy_cooking.iloc[:,[1,2,3]])
     
     st.subheader("Cookstove Characteristics")
@@ -123,23 +124,66 @@ with tab2:
     income_df = income_df.set_index('Area Type')
     st.dataframe(income_df)
 
+    st.subheader('References')
+
+    data = [
+    "https://mecs.org.uk/wp-content/uploads/2022/03/India-eCookbook-21-compressed.pdf",
+    "http://164.100.94.214/national-biomass-cookstoves-programme",
+    "https://mnre.gov.in/img/documents/uploads/77e0a45feb0c4ce4974a0429d1e39001.pdf",
+    "https://beestarlabel.com/Content/Files/Final_LPG_schedule.pdf",
+    "https://beestarlabel.com/Content/Files/Schedule_Induction_hobs.pdf",
+    "https://acp.copernicus.org/articles/18/15169/2018/acp-18-15169-2018.pdf",
+    "https://www.mdpi.com/2073-4433/10/12/729",
+    "https://cea.nic.in/cdm-co2-baseline-database",
+    "https://www.sciencedirect.com/science/article/abs/pii/S0301421513010719",
+    "DISCOMs Electricity Tariff Orders of 2021-22 and 2022-23",
+    "https://www.rff.org/publications/explainers/social-cost-carbon-101/",
+    "https://www.downtoearth.org.in/dte-infographics/social_cost_corbon/index.html",
+    "https://www.sciencedirect.com/science/article/pii/S0160412018324772",
+    "https://www.researchgate.net/publication/337429023_In-Field_Emission_Measurements_from_Biogas_and_Liquified_Petroleum_Gas_LPG_Stoves",
+    "https://bmcpublichealth.biomedcentral.com/articles/10.1186/s12889-020-09865-1",
+    "https://www.isid.ac.in/~epu/dispapers/dp22_04.pdf",
+    "India Residential Energy Survey (IRES) 2020"
+    ]
+
+    def is_url(s):
+        return s.startswith("http://") or s.startswith("https://")
+
+    markdown_text = ""
+    for i, item in enumerate(data, 1):
+        if is_url(item):
+            markdown_text += f"{i}. [{item}]({item})\n"
+        else:
+            markdown_text += f"{i}. {item}\n"
+
+    st.markdown(markdown_text)
+
+
 with tab1:
     #_______________basic settings_________________________________________
-    st.subheader("Household Profile")
+    st.subheader("Household Profile", help = 'The user has to select the following details to complete the household profile.')
     c1, c2 = st.columns(2)
     with c1: 
-        state_select = st.selectbox('Select State', State_list)
+        state_select = st.selectbox('Select State', State_list, help = 'Select the state in India for which you want to compare the cooking solutions.')
         with st.container():
-            area_select = st.selectbox('Area Type', ('Urban', 'Rural'))
-        monthly_income = st.number_input('Enter Monthly Income', min_value=0, max_value=1000000, value=30000, step=1000)
+            area_select = st.selectbox('Area Type', ('Urban', 'Rural'), help = 'Select the area type. Urban areas are usually governed by Municipal Corporations,' +
+                                       ' Municipal Councils, or Town Committees, while rural areas fall under the jurisdiction of' +
+                                       ' Panchayats (village-level self-governance bodies).')
+        monthly_income = st.number_input('Enter Monthly Income', min_value=0, max_value=1000000, value=30000, step=1000, help = "Please mention the Household's" + 
+                                         ' gross monthly income. This is required for estimating the share of cooking expenses.')
     annual_income = monthly_income * 12
     with c2:
         with st.container():
             cooking_source_options = energy_source_list
-            cooking_source_select = st.multiselect('Cooking Fuel Used', cooking_source_options, default=['Grid electricity'])
+            cooking_source_select = st.multiselect('Cooking Fuel Used', cooking_source_options, default=['Grid electricity'], help = 'Select the cooking fuels' +
+                                                    ' presently used in the household.')
             filtered_stoves = stove_file.loc[stove_file['Fuel'].isin(cooking_source_select), 'stoves'].unique().tolist()
-            cookstove_select = st.multiselect('Cookstove Used', filtered_stoves, default=['Electric Induction (1 burner)']) 
-            lpg_subsidy = st.selectbox('Are you eligible for an LPG subsidy?', ('No','Yes')) 
+            # cookstove_select = st.multiselect('Cookstove Used', filtered_stoves, default=['Electric Induction (1 burner)'], help = 'Select the cookstoves used' + 
+            #                                   ' in the household.')
+            cookstove_select = st.multiselect('Cookstove Used', filtered_stoves, help = 'Select the cookstoves used' + 
+                                              ' in the household.')  
+            lpg_subsidy = st.selectbox('Are you eligible for an LPG subsidy?', ('No','Yes'), help = 'This is required to understand if you would be requiring' + 
+                                       ' subsidy for household cooking purposes.') 
 
     if area_select=='Rural':
         if annual_income < 200000:
@@ -176,7 +220,7 @@ with tab1:
     # extracting data from datafile (excel)
     stove_list = stove_file_list['stoves'].tolist()
 
-    st.subheader("Meal Profile")
+    st.subheader("Meal Profile", help='Select your usual cooking pattern according to meal of the day below.')
     c1, c2, c3,c4 = st.columns(4)  
     with c1:
         st.write('Breakfast')
@@ -542,7 +586,7 @@ with tab1:
         if submit_button:
             # st.write("Code execution after submit button is clicked.")
 
-            st.subheader('Total operating cost for cooking (INR/month)')
+            st.subheader('Total operating cost for cooking (INR/month)', help = 'This is an indicative amount of monthly expenses on cooking energy demand.')
             c1, c2, c3,c4,c5,c6,c7 = st.columns(7)
             with c1:
                 st.metric('Present Cost', f"₹{current_cost:,.0f}")
@@ -552,7 +596,7 @@ with tab1:
                 delta=f"{change_str2(dcost)}₹{abs(current_cost - Grid_electricity_cost):,.0f} ({change_str2(dcost)} {abs(dcost):.0f}%)", delta_color='inverse')
             with c3:
                 dcost = -100*(current_cost - Solar_rooftop_cost)/current_cost
-                st.metric('Solar Induction', f"₹{Solar_rooftop_cost:,.0f}", 
+                st.metric('Solar Cooker', f"₹{Solar_rooftop_cost:,.0f}", 
                 delta=f"{change_str2(dcost)}₹{abs(current_cost - Solar_rooftop_cost):,.0f} ({change_str2(dcost)} {abs(dcost):.0f}%)", delta_color='inverse')
             with c4:
                 dcost = -100*(current_cost - LPG_cost)/current_cost
@@ -673,14 +717,15 @@ with tab1:
             # with c7:
             #     st.metric('Firewood & Livestock', f"{firewood_livestock_emission:,.2f}",)
             
-            st.subheader('Annual carbon emission (kgCO2eq./year)')
+            st.subheader('Annual carbon emission (kgCO2eq./year)', help = 'This is an indicative amount of the carbon emissions caused due' 
+                         + ' to the estimated energy consumption.')
             c1, c2, c3, c4, c5, c6, c7 = st.columns(7)
             with c1:
                 st.metric('Present Emissions', f"{(total_emissions_annual):,.0f}")
             with c2:
                 st.metric('Electric Induction', f"{Grid_electricity_emission_annual:,.0f}",)
             with c3:
-                st.metric('Solar Induction', f"{Solar_rooftop_emission_annual:,.0f}",) 
+                st.metric('Solar Cooker', f"{Solar_rooftop_emission_annual:,.0f}",) 
             with c4:
                 st.metric('LPG', f"{LPG_emission_annual:,.0f}",)
             with c5:
@@ -711,12 +756,13 @@ with tab1:
             #     st.metric('Firewood & Livestock', f"₹{firewood_livestock_emission_annual * social_carbon_cost:,.0f}",)
 
             # st.header('_Health Impacts_')
-            st.subheader('Daily Indoor Household Air Pollution (IHAP) [PM 2.5] (μg/m3)')
+            st.subheader('Daily Indoor Household Air Pollution (IHAP) [PM 2.5] (μg/m3)', help = 'This is the estimated indoor air pollution' 
+                         + ' which causes health hazards on prolonged exposure.')
             c1, c2,c3,c4,c5,c6 = st.columns(6)
             with c1:
                 st.metric('Electric Induction', f"{Grid_electricity_ihap:,.0f}",)
             with c2:
-                st.metric('Solar Induction', f"{Solar_rooftop_ihap:,.0f}",)
+                st.metric('Solar Cooker', f"{Solar_rooftop_ihap:,.0f}",)
             with c3:
                 st.metric('LPG', f"{LPG_ihap:,.0f}",)
             with c4:
@@ -795,12 +841,12 @@ with tab1:
                                                     f"{(current_cost_annual - Fire_Wood_cost_annual):,.0f}"],
                 # 'Payback period (years)' : ['NA',f"{Grid_electricity_pbp:,.0f}", f"{Solar_rooftop_pbp:,.0f}", f"{LPG_pbp:,.0f}",  f"{PNG_pbp:,.0f}",  f"{Biogas_pbp:,.0f}",
                                             #   f"{Firewood_pbp:,.0f}"],
-                'Payback period (years)': ['NA','NA' if Grid_electricity_pbp > 15 else f"{Grid_electricity_pbp:,.2f}",
-                                'NA' if Solar_rooftop_pbp > 15 else f"{Solar_rooftop_pbp:,.2f}",
-                                'NA' if LPG_pbp > 15 else f"{LPG_pbp:,.2f}",
-                                'NA' if PNG_pbp > 15 else f"{PNG_pbp:,.2f}",
-                                'NA' if Biogas_pbp > 15 else f"{Biogas_pbp:,.2f}",
-                                'NA' if Firewood_pbp > 15 else f"{Firewood_pbp:,.2f}"]
+                'Payback period (years)': ['NA','NA' if Grid_electricity_pbp > 15 or Grid_electricity_pbp < 0 else f"{Grid_electricity_pbp:,.2f}",
+                                'NA' if Solar_rooftop_pbp > 15 or Solar_rooftop_pbp < 0 else f"{Solar_rooftop_pbp:,.2f}",
+                                'NA' if LPG_pbp > 15 or  LPG_pbp <0 else f"{LPG_pbp:,.2f}",
+                                'NA' if PNG_pbp > 15 or PNG_pbp < 0 else f"{PNG_pbp:,.2f}",
+                                'NA' if Biogas_pbp > 15 or Biogas_pbp < 0 else f"{Biogas_pbp:,.2f}",
+                                'NA' if Firewood_pbp > 15 or Firewood_pbp < 0 else f"{Firewood_pbp:,.2f}"]
             }
             df = pd.DataFrame(data)
 
@@ -808,7 +854,7 @@ with tab1:
             available_variables = list(df.columns)
 
             # Select x and y variables
-            x_variable =['Present - '+str(selection_of_stoves),'Electric Induction', 'Solar Induction', 'LPG', 'PNG', 'Biogas','Firewood']
+            x_variable =['Present - '+str(selection_of_stoves),'Electric Induction', 'Solar Cooker', 'LPG', 'PNG', 'Biogas','Firewood']
             y_variable = st.selectbox('**Select a parameter**', available_variables)
             df['cooking stoves']=x_variable
             # Filter DataFrame based on selected x_variable and y_variable
@@ -826,23 +872,28 @@ with tab1:
                 fig.update_traces(hovertemplate = 'Value: %{y}')
 
                 # Set x-axis label 
-                fig.update_layout(xaxis_title = 'Cooking Fuel')
+                fig.update_layout(xaxis_title = 'Cooking Method')
                 # Set y-axis label
                 fig.update_layout(yaxis_title = y_variable)
 
                 st.plotly_chart(fig)
             with c2:
                 df_filtered = df[['cooking stoves', y_variable]].copy()
-                df_filtered.rename(columns={'cooking stoves': 'Cooking Fuel'}, inplace=True)
+                df_filtered.rename(columns={'cooking stoves': 'Cooking Method'}, inplace=True)
                 # df_filtered['cooking stoves'] = x_variable
                 df_filtered.reset_index()
-                df_filtered = df_filtered.set_index('Cooking Fuel')
+                df_filtered = df_filtered.set_index('Cooking Method')
                 # Display DataFrame as a table
                 st.dataframe(df_filtered)
 
                 # Save DataFrame as CSV
                 csv_data = df_filtered.to_csv(index=True)
                 st.download_button("Download CSV", data=csv_data, file_name="filtered_data.csv", mime="text/csv")
+            
+            st.subheader('Notes')
+            st.markdown('1. Payback period is shown only if it is below 15 years. "NA" has been mentioned for' 
+                        + ' payback period above 15 years or negative payback period.'
+                        + '\n2. Capex cost assumed based on secondary research of cookstove options available in the market and through schemes.' )
 
         # else:
         #     st.write('Refresh Page')
