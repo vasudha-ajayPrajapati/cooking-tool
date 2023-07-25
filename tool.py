@@ -853,6 +853,8 @@ with tab1:
             # Available variables for x and y
             available_variables = list(df.columns)
 
+            st.subheader('Visualisation of cooking parameters')
+
             # Select x and y variables
             x_variable =['Present - '+str(selection_of_stoves),'Electric Induction', 'Solar Cooker', 'LPG', 'PNG', 'Biogas','Firewood']
             y_variable = st.selectbox('**Select a parameter**', available_variables)
@@ -863,6 +865,7 @@ with tab1:
                 # Generate bar plot
                 # Generate bar plot using Plotly
             with c1:
+                # fig = px.bar(df, x='cooking stoves', y=y_variable, color = 'cooking stoves', color_continuous_scale='Viridis')
                 fig = px.bar(df, x='cooking stoves', y=y_variable)
 
                 # Rotate x-axis labels by 45 degrees
@@ -875,6 +878,9 @@ with tab1:
                 fig.update_layout(xaxis_title = 'Cooking Method')
                 # Set y-axis label
                 fig.update_layout(yaxis_title = y_variable)
+
+                # Remove the legend title
+                # fig.update_layout(legend_title_text='')
 
                 st.plotly_chart(fig)
             with c2:
