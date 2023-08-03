@@ -24,11 +24,10 @@ social_carbon_cost = 86 * 82 * 0.001 # Social carbon cost is 86 USD per ton of C
 #____________ Page info________________________________________
 about_markdown = 'This app has been developed by Vasudha Foundation.\n' + \
 'Development Team - Vikas Kumar, Bikash Sahu.\n' + \
-'For further details contact bikash@vasudhaindia.org.' + \
-'Disclaimer: Do not replicate this without permission.'
+'For further details contact bikash@vasudhaindia.org.'  
 
 # Set the page layout to be responsive
-st.set_page_config(layout="wide", menu_items={'Get Help': None, 'Report a Bug': None, 'About': about_markdown})
+st.set_page_config(page_title = 'Cooking Energy Tool', page_icon = '🍛',layout="wide", menu_items={'Get Help': None, 'Report a Bug': None, 'About': about_markdown})
 
 #___________Main page__________________________________________
 image_url = 'https://github.com/gitbik/cooking-tool/blob/main/Vasudha_Logo_PNG.png?raw=true'
@@ -61,6 +60,22 @@ microgrid_electricity_stove=["Electric Induction (1 burner)", "Electric Inductio
 
 tab1, tab2 = st.tabs(["User Selection", "Further Information"])
 with tab2:
+    ## user guide download
+    # with open("user-guide.pdf", "rb") as pdf_file:
+    #     PDFbyte = pdf_file.read()
+    # st.download_button(label="User Guide",
+    #                 data=PDFbyte,
+    #                 file_name="user-guide.pdf",
+    #                 mime='application/pdf')
+    
+    # ## methodology download
+    # with open("methodology.pdf", "rb") as pdf_file:
+    #     PDFbyte = pdf_file.read()
+    # st.download_button(label="Methodology",
+    #                 data=PDFbyte,
+    #                 file_name="methodology.pdf",
+    #                 mime='application/pdf')
+    
     with st.expander('More about electric induction and its benefits'):
         st.markdown("""
             * **Faster cooking times:** Induction cooktops heat up much faster than traditional electric or gas cooktops. This is because the heat is generated directly in the pan, rather than in the cooktop itself.
@@ -852,9 +867,8 @@ with tab1:
 
             # Available variables for x and y
             available_variables = list(df.columns)
-
+            
             st.subheader('Visualisation of cooking parameters')
-
             # Select x and y variables
             x_variable =['Present - '+str(selection_of_stoves),'Electric Induction', 'Solar Cooker', 'LPG', 'PNG', 'Biogas','Firewood']
             y_variable = st.selectbox('**Select a parameter**', available_variables)
@@ -862,27 +876,21 @@ with tab1:
             # Filter DataFrame based on selected x_variable and y_variable
 
             c1,c2= st.columns([5,3],gap="small")
-                # Generate bar plot
                 # Generate bar plot using Plotly
             with c1:
-                # fig = px.bar(df, x='cooking stoves', y=y_variable, color = 'cooking stoves', color_continuous_scale='Viridis')
-                fig = px.bar(df, x='cooking stoves', y=y_variable)
-
-                # Rotate x-axis labels by 45 degrees
-                fig.update_layout(xaxis_tickangle = -45)
-
-                # Add tooltips for each bar
-                fig.update_traces(hovertemplate = 'Value: %{y}')
-
-                # Set x-axis label 
-                fig.update_layout(xaxis_title = 'Cooking Method')
-                # Set y-axis label
-                fig.update_layout(yaxis_title = y_variable)
-
-                # Remove the legend title
-                # fig.update_layout(legend_title_text='')
-
+                # colors = ['lightslategray','black','red','blue','green','orange','yellow']
+                # colors[1] = 'crimson'
+                # colors[2]
+                fig = px.bar(df, x='cooking stoves', y=y_variable, 
+                             color_discrete_map={'Present - Selection of Stoves': 'red', 'Electric Induction': 'green',
+                                                 'Solar Cooker': 'blue','LPG': 'goldenrod', 'PNG': 'magenta','Biogas': 'black','Firewood': 'indigo'})
+                # color_discrete_sequence= px.colors.sequential.Plasma_r
+                fig.update_layout(xaxis_tickangle = -45) # Rotate x-axis labels by 45 degrees
+                fig.update_traces(hovertemplate = 'Value: %{y}') # Add tooltips for each bar
+                fig.update_layout(xaxis_title = 'Cooking Method') # Set x-axis label 
+                fig.update_layout(yaxis_title = y_variable) # Set y-axis label
                 st.plotly_chart(fig)
+           
             with c2:
                 df_filtered = df[['cooking stoves', y_variable]].copy()
                 df_filtered.rename(columns={'cooking stoves': 'Cooking Method'}, inplace=True)
