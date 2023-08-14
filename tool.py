@@ -94,7 +94,9 @@ with tab2:
     st.markdown('The meal energy consumption assumptions for electric cooking are provided in the following table.' 
                 + ' Please note the values mentioned are considered for a household comprising of 4 to 5 persons.'
                 + ' The meal energy consumption for other cooking fuels have been estimated based on the thermal efficiency mentioned below.')
-    st.dataframe(energy_cooking.iloc[:,[1,2,3]])
+    st.dataframe(energy_cooking.iloc[:,[1,2,3]].round({'time (min)':0, 'Energy (kWh)':2}))
+    # rounded_energy_cooking = energy_cooking.iloc[:, [1, 2, 3]].round({'Column1Name': 0, 'Column3Name': 2})
+
     
     st.subheader("Cookstove Characteristics")
 
@@ -120,7 +122,7 @@ with tab2:
     st.dataframe(carbon_ef_df)
     
     st.subheader("Statewise Grid Electricity Tariff of Indian States")
-    el_tariff_rates = pd.DataFrame(electricity_tariff_file.iloc[:,[0,1,2,3,4]])
+    el_tariff_rates = pd.DataFrame(electricity_tariff_file.iloc[:,[0,1,2,3,4]].round(2))
     el_tariff_rates = el_tariff_rates.set_index("State")
     st.dataframe(el_tariff_rates)
     
@@ -846,7 +848,7 @@ with tab1:
         with st.container():
             # Sample data
             data = {
-                'Unit cost (INR/kWh)': [(current_cost/total_energy_user)/30, f"{electricity_tariff:,.2f}", 0, 6.38, 5.86, 1.5,1.32],
+                'Unit cost (INR/kWh)': [f"{(current_cost/total_energy_user)/30:,.2f}", f"{electricity_tariff:,.2f}", f"{0:,.2f}", 6.38, 5.86, f"{1.5:,.2f}",1.32],
                 'Total operating cost for cooking (INR/month)': [f"{current_cost:,.0f}", f"{Grid_electricity_cost:,.0f}", f"{Solar_rooftop_cost:,.0f}",
                                                                 f"{LPG_cost:,.0f}", f"{PNG_cost:,.0f}", f"{Biogas_cost:,.0f}", f"{Biomass_cost:,.0f}"],
                 'Percentage of cooking expenses with monthly income (%)': [f"{(current_cost/monthly_income):,.2%}", f"{(Grid_electricity_cost/monthly_income):,.2%}", 
@@ -863,8 +865,8 @@ with tab1:
                                                     f"{Biogas_capex:,.0f}",  f"{Biomass_capex:,.0f}"],
                 'Unit carbon emission (kgCO2eq./kWh)' : [f"{present_EF:.2f}", f"{Grid_electricity_emission:.2f}", f"{Solar_rooftop_emission:.2f}", f"{LPG_emission:.2f}", 
                                                         f"{PNG_emission:.2f}", f"{Biogas_emission:.2f}", f"{Biomass_emission:.2f}"],
-                'Annual carbon emission (kgCO2eq./year)' : [f"{total_emissions_annual:.2f}", f"{Grid_electricity_emission_annual:.2f}", f"{Solar_rooftop_emission_annual:.2f}", 
-                                                            f"{LPG_emission_annual:.2f}", f"{PNG_emission_annual:.2f}", f"{Biogas_emission_annual:.2f}", f"{Biomass_emission_annual:.2f}"],
+                'Annual carbon emission (kgCO2eq./year)' : [f"{total_emissions_annual:.0f}", f"{Grid_electricity_emission_annual:.0f}", f"{Solar_rooftop_emission_annual:.0f}", 
+                                                            f"{LPG_emission_annual:.0f}", f"{PNG_emission_annual:.0f}", f"{Biogas_emission_annual:.0f}", f"{Biomass_emission_annual:.0f}"],
                 'Social carbon cost (INR/year)' : [f"{(total_emissions_annual * social_carbon_cost):,.0f}",  f"{Grid_electricity_emission_annual * social_carbon_cost:,.0f}",
                                                     f"{Solar_rooftop_emission_annual * social_carbon_cost:,.0f}",  f"{LPG_emission_annual * social_carbon_cost:,.0f}",
                                                         f"{PNG_emission_annual * social_carbon_cost:,.0f}",  f"{Biogas_emission_annual * social_carbon_cost:,.0f}",
@@ -877,12 +879,12 @@ with tab1:
                                                     f"{(current_cost_annual - Biomass_cost_annual):,.0f}"],
                 # 'Payback period (years)' : ['NA',f"{Grid_electricity_pbp:,.0f}", f"{Solar_rooftop_pbp:,.0f}", f"{LPG_pbp:,.0f}",  f"{PNG_pbp:,.0f}",  f"{Biogas_pbp:,.0f}",
                                             #   f"{Firewood_pbp:,.0f}"],
-                'Payback period (years)': ['NA','NA' if Grid_electricity_pbp > 15 or Grid_electricity_pbp < 0 else f"{Grid_electricity_pbp:,.2f}",
-                                'NA' if Solar_rooftop_pbp > 15 or Solar_rooftop_pbp < 0 else f"{Solar_rooftop_pbp:,.2f}",
-                                'NA' if LPG_pbp > 15 or  LPG_pbp <0 else f"{LPG_pbp:,.2f}",
-                                'NA' if PNG_pbp > 15 or PNG_pbp < 0 else f"{PNG_pbp:,.2f}",
-                                'NA' if Biogas_pbp > 15 or Biogas_pbp < 0 else f"{Biogas_pbp:,.2f}",
-                                'NA' if Biomass_pbp > 15 or Biomass_pbp < 0 else f"{Biomass_pbp:,.2f}"]
+                'Payback period (years)': ['NA','NA' if Grid_electricity_pbp > 15 or Grid_electricity_pbp < 0 else f"{Grid_electricity_pbp:,.0f}",
+                                'NA' if Solar_rooftop_pbp > 15 or Solar_rooftop_pbp < 0 else f"{Solar_rooftop_pbp:,.0f}",
+                                'NA' if LPG_pbp > 15 or  LPG_pbp <0 else f"{LPG_pbp:,.0f}",
+                                'NA' if PNG_pbp > 15 or PNG_pbp < 0 else f"{PNG_pbp:,.0f}",
+                                'NA' if Biogas_pbp > 15 or Biogas_pbp < 0 else f"{Biogas_pbp:,.0f}",
+                                'NA' if Biomass_pbp > 15 or Biomass_pbp < 0 else f"{Biomass_pbp:,.0f}"]
             }
             df = pd.DataFrame(data)
 
@@ -926,9 +928,12 @@ with tab1:
                 st.download_button("Download CSV", data=csv_data, file_name="filtered_data.csv", mime="text/csv")
             
             st.subheader('Notes')
-            st.markdown('1. Payback period is shown only if it is below 15 years. "NA" has been mentioned for' 
-                        + ' payback period above 15 years or negative payback period.'
-                        + '\n2. Capex cost assumed based on secondary research of cookstove options available in the market and through schemes.' )
+            st.markdown('''
+            - The values for biomass stoves are averaged across traditional, natural draft, and forced draft biomass stove varieties
+            - Payback period is shown only if it is below 15 years. "NA" is used for payback periods above 15 years or negative payback periods.
+            - Capex cost is assumed based on secondary research of available cookstove options in the market and through schemes.
+            ''')
+
 
         # else:
         #     st.write('Refresh Page')
