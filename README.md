@@ -7,7 +7,7 @@
   <p align="center">
     Please go through this to know more about tool developed to estimate the energy parameters of household cooking in India.
     <br /><br />
-    <a href="https://cooking-tool.streamlit.app" target = '_blank'><strong>Click here to access the web tool »</strong></a>
+    <a href="https://cooking-tool.streamlit.app" target="_blank" rel="noopener noreferrer"><strong>Click here to access the web tool »</strong></a>
     <br />
     <br />
   </p>
