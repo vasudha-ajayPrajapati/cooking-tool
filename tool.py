@@ -21,10 +21,15 @@ stove_file = pd.read_excel('cooking_energy.xlsx',sheet_name='stoves',index_col=(
 
 social_carbon_cost = 86 * 82 * 0.001 # Social carbon cost is 86 USD per ton of CO2
 
-#____________ Page info________________________________________
-about_markdown = 'This app has been developed by Vasudha Foundation.\n' + \
-'Development Team - Vikas Kumar, Bikash Sahu.\n' + \
-'For further details contact bikash@vasudhaindia.org.'  
+# #____________ Page info________________________________________
+# about_markdown = 'Development Team - Vikas Kumar, Bikash Sahu.' + \
+# 'For further details contact bikash@vasudhaindia.org.' + 
+# 'This analysis is a part of Deep Electrification initiative by Vasudha Foundation with support from SED Fund.'
+
+about_markdown = '''Development Team - Vikas Kumar, Bikash Sahu.
+For further details contact bikash@vasudhaindia.org.
+This analysis is a part of Deep Electrification initiative by Vasudha Foundation with support from SED Fund.'''
+
 
 # Set the page layout to be responsive
 st.set_page_config(page_title = 'Cooking Energy Tool', page_icon = '🍛',layout="wide", menu_items={'Get Help': None, 'Report a Bug': None, 'About': about_markdown})
@@ -94,7 +99,7 @@ with tab2:
     st.subheader("Cookstove Characteristics")
 
     stove_char = {
-    'Stove Type': ['Traditional cook stove (TCS)','Improved cook stove (ICS - Natural)','Improved cook stove (ICS - Forced)','Biogas (2 burner)',
+    'Stove Type': ['Traditional biomass cook stove','Improved biomass cook stove (Natural)','Improved cook stove (Forced)','Biogas (2 burner)',
                    'PNG (2 burner)','LPG (2 burner)','Electric Induction (1 burner)','Electric Induction (2 burner)','Electric Pressure Cooker'],
     'Life (years)': [1, 3, 3, 10, 10, 10, 10, 10, 10],
     'Thermal Efficiency (percent)': ['15%', '25%', '35%', '70%', '70% to 80%', '70% to 80%', '80% to 90%', '80% to 90%', '80% to 90%'],
@@ -107,8 +112,8 @@ with tab2:
     
     st.subheader("Carbon Emission Factors")
     carbon_ef = {
-    'Fuel Type': ['Firewood','Livestock Waste','Biogas','LPG','PNG','Grid electricity','Solar PV rooftop'],
-    'Unit Carbon Emission (kgCO2eq./kWh)': [0.4, 0.4, 0.15, 0.23, 0.2, 0.72, 0],
+    'Fuel Type': ['Biomass (Firewood & Livestock Waste)','Biogas','LPG','PNG','Grid electricity','Solar PV rooftop'],
+    'Unit Carbon Emission (kgCO2eq./kWh)': [0.4, 0.15, 0.23, 0.2, 0.72, 0],
     }
     carbon_ef_df = pd.DataFrame(carbon_ef)
     carbon_ef_df = carbon_ef_df.set_index('Fuel Type')
@@ -527,46 +532,62 @@ with tab1:
     Biogas_ihap = Biogas_data['Daily IHAP (PM2.5)'][0]
     Biogas_pbp = Biogas_capex / (current_cost_annual - Biogas_cost_annual)
 
+    #########Traditional Solid Biomass#########
+    Biomass_data=stove_file1[stove_file1["Fuel"] == 'Traditional Solid Biomass']
+    Biomass_data["Biomass_consumption"] = total_energy_induction/Biomass_data['Thermal Efficiency']
+    Biomass_data["Biomass_RS"] = Biomass_data["Biomass_consumption"] * Biomass_data['Unit cost']*30 #30 days
+    # Biomass_water_heater_eff=Biomass_data['Thermal Efficiency'].mean()# for water heater
+    Biomass_cost = Biomass_data["Biomass_RS"].mean()
+    Biomass_cost_annual = Biomass_cost * 12
+    Biomass_consumption_KWH = Biomass_data["Biomass_consumption"].mean()
+    Biomass_time = df_time * Biomass_data["time_conversion"][0]
+    Biomass_efficiency = Biomass_data['Thermal Efficiency'].mean()
+    Biomass_capex = Biomass_data['Capex'].mean()
+    Biomass_emission = Biomass_data['Unit carbon emission'][0]
+    Biomass_emission_annual = Biomass_emission * Biomass_consumption_KWH * 365 * 0.9
+    Biomass_ihap = Biomass_data['Daily IHAP (PM2.5)'][0]
+    Biomass_pbp = Biomass_capex / (current_cost_annual - Biomass_cost_annual)
+
     #########Fire Wood#########
-    Fire_Wood_data=stove_file1[stove_file1["Fuel"] == 'Firewood']
-    Fire_Wood_data["Fire_Wood_consumption"]=total_energy_induction/Fire_Wood_data['Thermal Efficiency']
-    Fire_Wood_data["Fire_Wood_RS"]=Fire_Wood_data["Fire_Wood_consumption"]*Fire_Wood_data['Unit cost']*30 #30 days
-    Fire_wood_water_heater_eff=Fire_Wood_data['Thermal Efficiency'].mean()# for water heater
-    Fire_Wood_cost=Fire_Wood_data["Fire_Wood_RS"].mean()
-    Fire_Wood_cost_annual = Fire_Wood_cost * 12
-    Fire_Wood_consumption_KWH=Fire_Wood_data["Fire_Wood_consumption"].mean()
-    Firewood_time = df_time * Fire_Wood_data["time_conversion"][0]
-    Firewood_efficiency = Fire_Wood_data['Thermal Efficiency'].mean()
-    Firewood_capex = Fire_Wood_data['Capex'].mean()
-    Firewood_emission = Fire_Wood_data['Unit carbon emission'][0]
-    Firewood_emission_annual = Firewood_emission * Fire_Wood_consumption_KWH * 365 * 0.9
-    Firewood_ihap = Fire_Wood_data['Daily IHAP (PM2.5)'][0]
-    Firewood_pbp = Firewood_capex / (current_cost_annual - Fire_Wood_cost_annual)
+    # Fire_Wood_data=stove_file1[stove_file1["Fuel"] == 'Firewood']
+    # Fire_Wood_data["Fire_Wood_consumption"]=total_energy_induction/Fire_Wood_data['Thermal Efficiency']
+    # Fire_Wood_data["Fire_Wood_RS"]=Fire_Wood_data["Fire_Wood_consumption"]*Fire_Wood_data['Unit cost']*30 #30 days
+    # Fire_wood_water_heater_eff=Fire_Wood_data['Thermal Efficiency'].mean()# for water heater
+    # Fire_Wood_cost=Fire_Wood_data["Fire_Wood_RS"].mean()
+    # Fire_Wood_cost_annual = Fire_Wood_cost * 12
+    # Fire_Wood_consumption_KWH=Fire_Wood_data["Fire_Wood_consumption"].mean()
+    # Firewood_time = df_time * Fire_Wood_data["time_conversion"][0]
+    # Firewood_efficiency = Fire_Wood_data['Thermal Efficiency'].mean()
+    # Firewood_capex = Fire_Wood_data['Capex'].mean()
+    # Firewood_emission = Fire_Wood_data['Unit carbon emission'][0]
+    # Firewood_emission_annual = Firewood_emission * Fire_Wood_consumption_KWH * 365 * 0.9
+    # Firewood_ihap = Fire_Wood_data['Daily IHAP (PM2.5)'][0]
+    # Firewood_pbp = Firewood_capex / (current_cost_annual - Fire_Wood_cost_annual)
 
     #########Livestock Waste#########
-    Livestock_Waste_data=stove_file1[stove_file1["Fuel"] == 'Livestock Waste']
-    Livestock_Waste_data["Livestock Waste_consumption"]=total_energy_induction/Livestock_Waste_data['Thermal Efficiency']
-    Livestock_Waste_data["Livestock Waste_RS"]=Livestock_Waste_data["Livestock Waste_consumption"]*Livestock_Waste_data['Unit cost']*30 #30 days
-    Livestock_Waste_cost=Livestock_Waste_data["Livestock Waste_RS"].mean()
-    Livestock_Waste_cost_annual = Livestock_Waste_cost * 12
-    Livestock_Waste_consumption_KWH=Livestock_Waste_data["Livestock Waste_consumption"].mean()
-    Livestock_Waste_time = df_time * Livestock_Waste_data["time_conversion"][0]
-    Livestock_Waste_efficiency = Livestock_Waste_data['Thermal Efficiency'][0]
-    Livestock_capex = Livestock_Waste_data['Capex'].mean()
-    Livestock_emission = Livestock_Waste_data['Unit carbon emission'][0]
-    Livestock_emission_annual = Livestock_emission * Livestock_Waste_consumption_KWH * 365 * 0.9
-    Livestock_ihap = Livestock_Waste_data['Daily IHAP (PM2.5)'][0]
-    Livestock_pbp = Livestock_capex / (current_cost_annual - Livestock_Waste_cost_annual)
+    # Livestock_Waste_data=stove_file1[stove_file1["Fuel"] == 'Livestock Waste']
+    # Livestock_Waste_data["Livestock Waste_consumption"]=total_energy_induction/Livestock_Waste_data['Thermal Efficiency']
+    # Livestock_Waste_data["Livestock Waste_RS"]=Livestock_Waste_data["Livestock Waste_consumption"]*Livestock_Waste_data['Unit cost']*30 #30 days
+    # Livestock_Waste_cost=Livestock_Waste_data["Livestock Waste_RS"].mean()
+    # Livestock_Waste_cost_annual = Livestock_Waste_cost * 12
+    # Livestock_Waste_consumption_KWH=Livestock_Waste_data["Livestock Waste_consumption"].mean()
+    # Livestock_Waste_time = df_time * Livestock_Waste_data["time_conversion"][0]
+    # Livestock_Waste_efficiency = Livestock_Waste_data['Thermal Efficiency'][0]
+    # Livestock_capex = Livestock_Waste_data['Capex'].mean()
+    # Livestock_emission = Livestock_Waste_data['Unit carbon emission'][0]
+    # Livestock_emission_annual = Livestock_emission * Livestock_Waste_consumption_KWH * 365 * 0.9
+    # Livestock_ihap = Livestock_Waste_data['Daily IHAP (PM2.5)'][0]
+    # Livestock_pbp = Livestock_capex / (current_cost_annual - Livestock_Waste_cost_annual)
 
     ############average of firewood and livestocks#########
-    firewood_livestock_cost_average=(Livestock_Waste_cost+Fire_Wood_cost)/2
-    firewood_livestock_time = (Firewood_time+ Livestock_Waste_time)/2
-    firewood_livestock_efficiency = (Firewood_efficiency + Livestock_Waste_efficiency)/2
-    firewood_livestock_capex = (Firewood_capex + Livestock_capex)/2
-    firewood_livestock_emission = (Firewood_emission + Livestock_emission)/2
-    firewood_livestock_emission_annual = (Firewood_emission_annual + Livestock_emission_annual)/2
-    firewood_livestock_ihap = (Firewood_ihap + Livestock_ihap) / 2
-    firewood_livestock_pbp = (Firewood_pbp + Livestock_pbp) / 2
+    # firewood_livestock_cost_average=(Livestock_Waste_cost+Fire_Wood_cost)/2
+    # firewood_livestock_time = (Firewood_time+ Livestock_Waste_time)/2
+    # firewood_livestock_efficiency = (Firewood_efficiency + Livestock_Waste_efficiency)/2
+    # firewood_livestock_capex = (Firewood_capex + Livestock_capex)/2
+    # firewood_livestock_emission = (Firewood_emission + Livestock_emission)/2
+    # firewood_livestock_emission_annual = (Firewood_emission_annual + Livestock_emission_annual)/2
+    # firewood_livestock_ihap = (Firewood_ihap + Livestock_ihap) / 2
+    # firewood_livestock_pbp = (Firewood_pbp + Livestock_pbp) / 2
 
     ###
     # Update for induction (1 burner) only use case
@@ -626,9 +647,9 @@ with tab1:
                 st.metric('Biogas', f"₹{Biogas_cost:,.0f}", 
                 delta=f"{change_str2(dcost)} ₹{abs(current_cost - Biogas_cost):,.0f} ({change_str2(dcost)} {abs(dcost):.0f}%)", delta_color='inverse')
             with c7:
-                dcost = -100*(current_cost - firewood_livestock_cost_average)/current_cost
-                st.metric('Firewood & Livestock Waste', f"₹{firewood_livestock_cost_average:,.0f}", 
-                delta=f"{change_str2(dcost)} ₹{abs(current_cost - firewood_livestock_cost_average):,.0f} ({change_str2(dcost)} {abs(dcost):.0f}%)", delta_color='inverse')
+                dcost = -100*(current_cost - Biomass_cost)/current_cost
+                st.metric('Biomass', f"₹{Biomass_cost:,.0f}", 
+                delta=f"{change_str2(dcost)} ₹{abs(current_cost - Biomass_cost):,.0f} ({change_str2(dcost)} {abs(dcost):.0f}%)", delta_color='inverse')
 
             # st.subheader('Percentage of cooking expenses with monthly income (%)')
             # c1, c2, c3,c4,c5,c6,c7 = st.columns(7)
@@ -748,7 +769,7 @@ with tab1:
             with c6:
                 st.metric('Biogas',f"{Biogas_emission_annual:,.0f}")
             with c7:
-                st.metric('Firewood & Livestock', f"{firewood_livestock_emission_annual:,.0f}",)
+                st.metric('Biomass', f"{Biomass_emission_annual:,.0f}",)
 
             
             # social_carbon_cost = 86 * 82 * 0.001 # Social carbon cost is 86 USD per ton of CO2
@@ -785,7 +806,7 @@ with tab1:
             with c5:
                 st.metric('Biogas', f"{Biogas_ihap:,.0f}",) 
             with c6:
-                st.metric('Firewood & Livestock Waste', f"{firewood_livestock_ihap:,.0f}",)
+                st.metric('Biomass', f"{Biomass_ihap:,.0f}",)
             
             # st.subheader('Health Hazards')
             st.markdown('_The updated WHO guidelines state that annual average concentrations of PM2.5 should not exceed 5 µg/m3,' 
@@ -825,35 +846,35 @@ with tab1:
         with st.container():
             # Sample data
             data = {
-                'Unit cost (INR/kWh)': [(current_cost/total_energy_user)/30, electricity_tariff, 0, 6.38, 5.86, 1.5,1.32],
+                'Unit cost (INR/kWh)': [(current_cost/total_energy_user)/30, f"{electricity_tariff:,.2f}", 0, 6.38, 5.86, 1.5,1.32],
                 'Total operating cost for cooking (INR/month)': [f"{current_cost:,.0f}", f"{Grid_electricity_cost:,.0f}", f"{Solar_rooftop_cost:,.0f}",
-                                                                f"{LPG_cost:,.0f}", f"{PNG_cost:,.0f}", f"{Biogas_cost:,.0f}", f"{firewood_livestock_cost_average:,.0f}"],
+                                                                f"{LPG_cost:,.0f}", f"{PNG_cost:,.0f}", f"{Biogas_cost:,.0f}", f"{Biomass_cost:,.0f}"],
                 'Percentage of cooking expenses with monthly income (%)': [f"{(current_cost/monthly_income):,.2%}", f"{(Grid_electricity_cost/monthly_income):,.2%}", 
                                                                         f"{(Solar_rooftop_cost/monthly_income):,.2%}", f"{(LPG_cost/monthly_income):,.2%}", 
                                                                         f"{(PNG_cost/monthly_income):,.2%}", f"{(Biogas_cost/monthly_income):,.2%}", 
-                                                                        f"{(firewood_livestock_cost_average/monthly_income):,.2%}"],
+                                                                        f"{(Biomass_cost/monthly_income):,.2%}"],
                 'Daily cooking duration (hours/day)': [f"{current_time_daily:,.2f}", f"{Grid_electricity_time:,.2f}", f"{Solar_rooftop_time:,.2f}", 
-                                                    f"{LPG_time:,.2f}", f"{PNG_time:,.2f}", f"{Biogas_time:,.2f}", f"{firewood_livestock_time:,.2f}"],
+                                                    f"{LPG_time:,.2f}", f"{PNG_time:,.2f}", f"{Biogas_time:,.2f}", f"{Biomass_time:,.2f}"],
                 'Daily energy consumption for cooking (kWh/day)': [f"{total_energy:,.2f}", f"{Grid_electricity_consumption_KWH:.2f}", f"{Solar_rooftop_consumption_kwh:.2f}", 
-                                                            f"{LPG_consumption_kwh:,.2f}",f"{PNG_CONSUMPTON_KWH:.2f}", f"{Biogas_CONSUMPTION_KWH:.2f}", f"{Fire_Wood_consumption_KWH:.2f}"],
+                                                            f"{LPG_consumption_kwh:,.2f}",f"{PNG_CONSUMPTON_KWH:.2f}", f"{Biogas_CONSUMPTION_KWH:.2f}", f"{Biomass_consumption_KWH:.2f}"],
                 'Thermal efficiency (%)': ['-',f"{Grid_electricity_efficiency:,.0%}", f"{Solar_rooftop_efficiency:,.0%}", f"{LPG_efficiency:,.0%}", 
-                                        f"{PNG_efficiency:,.0%}", f"{Biogas_efficiency:,.0%}", f"{Firewood_efficiency:,.0%}"],
+                                        f"{PNG_efficiency:,.0%}", f"{Biogas_efficiency:,.0%}", f"{Biomass_efficiency:,.0%}"],
                 'Cookstove and equipment cost (INR)': ['NA',f"{Grid_electricity_capex:,.0f}", f"{Solar_rooftop_capex:,.0f}", f"{LPG_capex:,.0f}", f"{PNG_capex:,.0f}",
-                                                    f"{Biogas_capex:,.0f}",  f"{Firewood_capex:,.0f}"],
+                                                    f"{Biogas_capex:,.0f}",  f"{Biomass_capex:,.0f}"],
                 'Unit carbon emission (kgCO2eq./kWh)' : [f"{present_EF:.2f}", f"{Grid_electricity_emission:.2f}", f"{Solar_rooftop_emission:.2f}", f"{LPG_emission:.2f}", 
-                                                        f"{PNG_emission:.2f}", f"{Biogas_emission:.2f}", f"{firewood_livestock_emission:.2f}"],
+                                                        f"{PNG_emission:.2f}", f"{Biogas_emission:.2f}", f"{Biomass_emission:.2f}"],
                 'Annual carbon emission (kgCO2eq./year)' : [f"{total_emissions_annual:.2f}", f"{Grid_electricity_emission_annual:.2f}", f"{Solar_rooftop_emission_annual:.2f}", 
-                                                            f"{LPG_emission_annual:.2f}", f"{PNG_emission_annual:.2f}", f"{Biogas_emission_annual:.2f}", f"{firewood_livestock_emission_annual:.2f}"],
+                                                            f"{LPG_emission_annual:.2f}", f"{PNG_emission_annual:.2f}", f"{Biogas_emission_annual:.2f}", f"{Biomass_emission_annual:.2f}"],
                 'Social carbon cost (INR/year)' : [f"{(total_emissions_annual * social_carbon_cost):,.0f}",  f"{Grid_electricity_emission_annual * social_carbon_cost:,.0f}",
                                                     f"{Solar_rooftop_emission_annual * social_carbon_cost:,.0f}",  f"{LPG_emission_annual * social_carbon_cost:,.0f}",
                                                         f"{PNG_emission_annual * social_carbon_cost:,.0f}",  f"{Biogas_emission_annual * social_carbon_cost:,.0f}",
-                                                            f"{firewood_livestock_emission_annual * social_carbon_cost:,.0f}"],
+                                                            f"{Biomass_emission_annual * social_carbon_cost:,.0f}"],
                 'Daily IHAP [PM 2.5] (μg/m3)' : ['NA', f"{Grid_electricity_ihap:,.0f}",  f"{Solar_rooftop_ihap:,.0f}",  f"{LPG_ihap:,.0f}",  f"{PNG_ihap:,.0f}",
-                                                f"{Biogas_ihap:,.0f}",  f"{firewood_livestock_ihap:,.0f}"],
+                                                f"{Biogas_ihap:,.0f}",  f"{Biomass_ihap:,.0f}"],
 
                 'Annual opex savings (INR)' : ['NA', f"{(current_cost_annual - Grid_electricity_cost_annual):,.0f}",  f"{(current_cost_annual - Solar_rooftop_cost_annual):,.0f}",
                                                 f"{(current_cost_annual - LPG_cost_annual):,.0f}",  f"{(current_cost_annual - PNG_cost_annual):,.0f}",  f"{(current_cost_annual - Biogas_cost_annual):,.0f}",
-                                                    f"{(current_cost_annual - Fire_Wood_cost_annual):,.0f}"],
+                                                    f"{(current_cost_annual - Biomass_cost_annual):,.0f}"],
                 # 'Payback period (years)' : ['NA',f"{Grid_electricity_pbp:,.0f}", f"{Solar_rooftop_pbp:,.0f}", f"{LPG_pbp:,.0f}",  f"{PNG_pbp:,.0f}",  f"{Biogas_pbp:,.0f}",
                                             #   f"{Firewood_pbp:,.0f}"],
                 'Payback period (years)': ['NA','NA' if Grid_electricity_pbp > 15 or Grid_electricity_pbp < 0 else f"{Grid_electricity_pbp:,.2f}",
@@ -861,7 +882,7 @@ with tab1:
                                 'NA' if LPG_pbp > 15 or  LPG_pbp <0 else f"{LPG_pbp:,.2f}",
                                 'NA' if PNG_pbp > 15 or PNG_pbp < 0 else f"{PNG_pbp:,.2f}",
                                 'NA' if Biogas_pbp > 15 or Biogas_pbp < 0 else f"{Biogas_pbp:,.2f}",
-                                'NA' if Firewood_pbp > 15 or Firewood_pbp < 0 else f"{Firewood_pbp:,.2f}"]
+                                'NA' if Biomass_pbp > 15 or Biomass_pbp < 0 else f"{Biomass_pbp:,.2f}"]
             }
             df = pd.DataFrame(data)
 
@@ -870,7 +891,7 @@ with tab1:
             
             st.subheader('Visualisation of cooking parameters')
             # Select x and y variables
-            x_variable =['Present - '+str(selection_of_stoves),'Electric Induction', 'Solar Cooker', 'LPG', 'PNG', 'Biogas','Firewood']
+            x_variable =['Present - '+str(selection_of_stoves),'Electric Induction', 'Solar Cooker', 'LPG', 'PNG', 'Biogas','Biomass']
             y_variable = st.selectbox('**Select a parameter**', available_variables)
             df['cooking stoves']=x_variable
             # Filter DataFrame based on selected x_variable and y_variable
