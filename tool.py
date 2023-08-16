@@ -22,7 +22,7 @@ stove_file = pd.read_excel('cooking_energy.xlsx',sheet_name='stoves',index_col=(
 social_carbon_cost = 86 * 82 * 0.001 # Social carbon cost is 86 USD per ton of CO2
 
 # #____________ Page info________________________________________
-# about_markdown = 'Development Team - Vikas Kumar, Bikash Sahu.' + \
+# about_markdown = 'Development Team - Bikash Sahu, Vikas Kumar.' + \
 # 'For further details contact bikash@vasudhaindia.org.' + 
 # 'This analysis is a part of Deep Electrification initiative by Vasudha Foundation with support from SED Fund.'
 
@@ -102,11 +102,11 @@ with tab2:
 
     stove_char = {
     'Stove Type': ['Traditional biomass cook stove','Improved biomass cook stove (Natural)','Improved cook stove (Forced)','Biogas (2 burner)',
-                   'PNG (2 burner)','LPG (2 burner)','Electric Induction (1 burner)','Electric Induction (2 burner)','Electric Pressure Cooker'],
-    'Life (years)': [1, 3, 3, 10, 10, 10, 10, 10, 10],
-    'Thermal Efficiency (percent)': ['15%', '25%', '35%', '70%', '70% to 80%', '70% to 80%', '80% to 90%', '80% to 90%', '80% to 90%'],
-    'Capex (INR)': ['0','INR 750 to INR 900','INR 1000','INR 40,000 to INR 60,000','INR 1,100 to INR 2,500',
-                    'INR 1,000 to INR 2,000','INR 1,000 to INR 2,900','INR 2,000 to INR 5,800','INR 5,000 to INR 10,000']
+                   'PNG (2 burner)','LPG (2 burner)','Electric Induction (1 burner)','Electric Induction (2 burner)','Solar Cooker (1 burner)','Solar Cooker (2 burner)'],
+    'Life (years)': [1, 4, 4, 10, 10, 10, 10, 10, 10, 10],
+    'Thermal Efficiency (percent)': ['15%', '25%', '35%', '70%', '70% to 80%', '70% to 80%', '80% to 90%', '80% to 90%', '80% to 90%', '80% to 90%'],
+    'Capex (INR)': ['0','INR 1000 to INR 1500','INR 1500 to INR 2500','INR 40,000 to INR 60,000','INR 1,500 to INR 2,500',
+                    'INR 1,000 to INR 2,000','INR 1,500 to INR 3,000','INR 3,000 to INR 6,000','INR 55,000 to INR 65,000','INR 1,20,000 to INR 1,40,000']
     }
     stove_char_df = pd.DataFrame(stove_char)
     stove_char_df = stove_char_df.set_index('Stove Type')
@@ -165,7 +165,8 @@ with tab2:
     "https://www.researchgate.net/publication/337429023_In-Field_Emission_Measurements_from_Biogas_and_Liquified_Petroleum_Gas_LPG_Stoves",
     "https://bmcpublichealth.biomedcentral.com/articles/10.1186/s12889-020-09865-1",
     "https://www.isid.ac.in/~epu/dispapers/dp22_04.pdf",
-    "India Residential Energy Survey (IRES) 2020"
+    "India Residential Energy Survey (IRES) 2020",
+    "https://www.jstor.org/stable/resrep21836.8"
     ]
 
     def is_url(s):
@@ -480,7 +481,8 @@ with tab1:
     Solar_rooftop_time_conversion = Solar_rooftop_data['time_conversion'][0]
     Solar_rooftop_time = df_time * Solar_rooftop_time_conversion
     Solar_rooftop_efficiency = Solar_rooftop_data['Thermal Efficiency'][0]
-    Solar_rooftop_capex = Solar_rooftop_data['Capex'][1]
+    Solar_rooftop_capex = Solar_rooftop_data['Capex'][0]
+    st.write(Solar_rooftop_data['Capex'])
     Solar_rooftop_emission = Solar_rooftop_data['Unit carbon emission'][0]
     Solar_rooftop_emission_annual = Solar_rooftop_emission * Solar_rooftop_consumption_kwh * 365 * 0.9
     Solar_rooftop_ihap = Solar_rooftop_data['Daily IHAP (PM2.5)'][0]
@@ -929,9 +931,10 @@ with tab1:
             
             st.subheader('Notes')
             st.markdown('''
-            - The values for biomass stoves are averaged across traditional, natural draft, and forced draft biomass stove varieties
-            - Payback period is shown only if it is below 15 years. "NA" is used for payback periods above 15 years or negative payback periods.
+            - The values for biomass stoves are averaged across traditional, natural draft, and forced draft biomass stove varieties.
             - Capex cost is assumed based on secondary research of available cookstove options in the market and through schemes.
+            - Cost of solar cookstove does not include battery storage.
+            - Payback period is shown only if it is below 15 years. "NA" is used for payback periods above 15 years or negative payback periods.
             ''')
 
 
