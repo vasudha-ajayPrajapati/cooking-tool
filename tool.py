@@ -482,7 +482,6 @@ with tab1:
     Solar_rooftop_time = df_time * Solar_rooftop_time_conversion
     Solar_rooftop_efficiency = Solar_rooftop_data['Thermal Efficiency'][0]
     Solar_rooftop_capex = Solar_rooftop_data['Capex'][0]
-    st.write(Solar_rooftop_data['Capex'])
     Solar_rooftop_emission = Solar_rooftop_data['Unit carbon emission'][0]
     Solar_rooftop_emission_annual = Solar_rooftop_emission * Solar_rooftop_consumption_kwh * 365 * 0.9
     Solar_rooftop_ihap = Solar_rooftop_data['Daily IHAP (PM2.5)'][0]
