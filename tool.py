@@ -26,7 +26,7 @@ social_carbon_cost = 86 * 82 * 0.001 # Social carbon cost is 86 USD per ton of C
 # 'For further details contact bikash@vasudhaindia.org.' + 
 # 'This analysis is a part of Deep Electrification initiative by Vasudha Foundation with support from SED Fund.'
 
-about_markdown = '''Development Team - Vikas Kumar, Bikash Sahu.
+about_markdown = '''Development Team - Bikash Sahu, Vikas Kumar.
 For further details contact bikash@vasudhaindia.org.
 This analysis is a part of Deep Electrification initiative by Vasudha Foundation with support from SED Fund.'''
 
