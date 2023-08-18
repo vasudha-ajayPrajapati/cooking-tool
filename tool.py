@@ -104,7 +104,7 @@ with tab2:
     'Stove Type': ['Traditional biomass cook stove','Improved biomass cook stove (Natural)','Improved cook stove (Forced)','Biogas (2 burner)',
                    'PNG (2 burner)','LPG (2 burner)','Electric Induction (1 burner)','Electric Induction (2 burner)','Solar Cooker (1 burner)','Solar Cooker (2 burner)'],
     'Life (years)': [1, 4, 4, 10, 10, 10, 10, 10, 10, 10],
-    'Thermal Efficiency (percent)': ['15%', '25%', '35%', '70%', '70% to 80%', '70% to 80%', '80% to 90%', '80% to 90%', '80% to 90%', '80% to 90%'],
+    'Thermal Efficiency (percent)': ['15%', '20%', '30%', '60% to 70%', '60% to 70%', '60% to 70%', '80% to 90%', '80% to 90%', '80% to 90%', '80% to 90%'],
     'Capex (INR)': ['0','INR 1000 to INR 1500','INR 1500 to INR 2500','INR 40,000 to INR 60,000','INR 1,500 to INR 2,500',
                     'INR 1,000 to INR 2,000','INR 1,500 to INR 3,000','INR 3,000 to INR 6,000','INR 55,000 to INR 65,000','INR 1,20,000 to INR 1,40,000']
     }
@@ -166,7 +166,8 @@ with tab2:
     "https://bmcpublichealth.biomedcentral.com/articles/10.1186/s12889-020-09865-1",
     "https://www.isid.ac.in/~epu/dispapers/dp22_04.pdf",
     "India Residential Energy Survey (IRES) 2020",
-    "https://www.jstor.org/stable/resrep21836.8"
+    "https://www.jstor.org/stable/resrep21836.8",
+    "https://thermopedia.com/content/10255/"
     ]
 
     def is_url(s):
@@ -477,7 +478,7 @@ with tab1:
     Solar_rooftop_data["Solar rooftop_RS"]=Solar_rooftop_data["Solar rooftop_consumption"]*Solar_rooftop_data['Unit cost']*30 #30 days
     Solar_rooftop_cost=Solar_rooftop_data["Solar rooftop_RS"].mean()
     Solar_rooftop_cost_annual = Solar_rooftop_cost * 12
-    Solar_rooftop_consumption_kwh=Solar_rooftop_data["Solar rooftop_consumption"].mean()
+    Solar_rooftop_consumption_kwh = Solar_rooftop_data["Solar rooftop_consumption"].mean()
     Solar_rooftop_time_conversion = Solar_rooftop_data['time_conversion'][0]
     Solar_rooftop_time = df_time * Solar_rooftop_time_conversion
     Solar_rooftop_efficiency = Solar_rooftop_data['Thermal Efficiency'][0]
