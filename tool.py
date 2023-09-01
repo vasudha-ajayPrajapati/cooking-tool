@@ -101,12 +101,12 @@ with tab2:
     st.subheader("Cookstove Characteristics")
 
     stove_char = {
-    'Stove Type': ['Traditional biomass cook stove','Improved biomass cook stove (Natural)','Improved cook stove (Forced)','Biogas (2 burner)',
+    'Stove Type': ['Traditional cook stove','Improved cook stove (Natural)','Improved cook stove (Forced)','Biogas (2 burner)',
                    'PNG (2 burner)','LPG (2 burner)','Electric Induction (1 burner)','Electric Induction (2 burner)','Solar Cooker (1 burner)','Solar Cooker (2 burner)'],
     'Life (years)': [1, 4, 4, 10, 10, 10, 10, 10, 10, 10],
-    'Thermal Efficiency (percent)': ['15%', '20%', '30%', '60% to 70%', '60% to 70%', '60% to 70%', '80% to 90%', '80% to 90%', '80% to 90%', '80% to 90%'],
-    'Capex (INR)': ['0','INR 1000 to INR 1500','INR 1500 to INR 2500','INR 40,000 to INR 60,000','INR 1,500 to INR 2,500',
-                    'INR 1,000 to INR 2,000','INR 1,500 to INR 3,000','INR 3,000 to INR 6,000','INR 55,000 to INR 65,000','INR 1,20,000 to INR 1,40,000']
+    'Thermal Efficiency (percent)': ['15%', '20%', '30%', '60%', '60%', '60%', '80%', '80%', '80%', '80%'],
+    'Capex (INR)': ['0','1,250','2,000','50,000','2,000','1,500','2,000','4,000','55,000','1,40,000'],
+    'Unit Cost (INR/kWh)': ['1.41','1.34','1.27','1.5','5.86','4.98','Based on electricity tariff','Based on electricity tariff','0','0']
     }
     stove_char_df = pd.DataFrame(stove_char)
     stove_char_df = stove_char_df.set_index('Stove Type')
