@@ -106,7 +106,7 @@ with tab2:
     'Life (years)': [1, 4, 4, 10, 10, 10, 10, 10, 10, 10],
     'Thermal Efficiency (percent)': ['15%', '20%', '30%', '60%', '60%', '60%', '80%', '80%', '80%', '80%'],
     'Capex (INR)': ['0','1,250','2,000','50,000','2,000','1,500','2,000','4,000','55,000','1,40,000'],
-    'Unit Cost (INR/kWh)': ['1.41','1.34','1.27','1.5','5.86','4.98','Based on electricity tariff','Based on electricity tariff','0','0']
+    'Unit Cost (INR/kWh)': ['1.41','1.34','1.27','1.5','4.77','4.98','Based on electricity tariff','Based on electricity tariff','0','0']
     }
     stove_char_df = pd.DataFrame(stove_char)
     stove_char_df = stove_char_df.set_index('Stove Type')
