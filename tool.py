@@ -541,15 +541,15 @@ with tab1:
     Biomass_data["Biomass_consumption"] = total_energy_induction/Biomass_data['Thermal Efficiency']
     Biomass_data["Biomass_RS"] = Biomass_data["Biomass_consumption"] * Biomass_data['Unit cost']*30 #30 days
     # Biomass_water_heater_eff=Biomass_data['Thermal Efficiency'].mean()# for water heater
-    Biomass_cost = Biomass_data["Biomass_RS"].mean()
+    Biomass_cost = Biomass_data["Biomass_RS"][2]
     Biomass_cost_annual = Biomass_cost * 12
-    Biomass_consumption_KWH = Biomass_data["Biomass_consumption"].mean()
-    Biomass_time = df_time * Biomass_data["time_conversion"][0]
-    Biomass_efficiency = Biomass_data['Thermal Efficiency'].mean()
-    Biomass_capex = Biomass_data['Capex'].mean()
-    Biomass_emission = Biomass_data['Unit carbon emission'][0]
+    Biomass_consumption_KWH = Biomass_data["Biomass_consumption"][2]
+    Biomass_time = df_time * Biomass_data["time_conversion"][2]
+    Biomass_efficiency = Biomass_data['Thermal Efficiency'][2]
+    Biomass_capex = Biomass_data['Capex'][2]
+    Biomass_emission = Biomass_data['Unit carbon emission'][2]
     Biomass_emission_annual = Biomass_emission * Biomass_consumption_KWH * 365 * 0.9
-    Biomass_ihap = Biomass_data['Daily IHAP (PM2.5)'][0]
+    Biomass_ihap = Biomass_data['Daily IHAP (PM2.5)'][2]
     Biomass_pbp = Biomass_capex / (current_cost_annual - Biomass_cost_annual)
 
     #########Fire Wood#########
