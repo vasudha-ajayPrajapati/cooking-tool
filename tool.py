@@ -739,7 +739,7 @@ if language_select=="Hindi":
                     # color_discrete_sequence= px.colors.sequential.Plasma_r
                     fig.update_layout(xaxis_tickangle = -45) # Rotate x-axis labels by 45 degrees
                     fig.update_traces(hovertemplate = 'Value: %{y}') # Add tooltips for each bar
-                    fig.update_layout(xaxis_title = "पाकने की विधि") # Set x-axis label 
+                    fig.update_layout(xaxis_title = "खाना पकाने की विधि") # Set x-axis label 
                     fig.update_layout(yaxis_title = y_variable) # Set y-axis label
                     st.plotly_chart(fig)
             
