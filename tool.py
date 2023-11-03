@@ -916,8 +916,8 @@ else:
         st.subheader("Daily IHAP")
         ihap = {
         'Stove Type': ['Traditional cook stove (TCS)','Improved cook stove (ICS - Natural)','Improved cook stove (ICS - Forced)',
-                    'Biogas (2 burner)','PNG (2 burner)','LPG (2 burner)','Electric Induction','Electric Pressure Cooker'],
-        'Daily IHAP - PM 2.5 (μg/m3)': [1230, 410, 165, 60, 47, 64, 47, 35],
+                    'Biogas (2 burner)','PNG (2 burner)','LPG (2 burner)','Electric Induction','Indoor Solar Cooker'],
+        'Daily IHAP - PM 2.5 (μg/m3)': [1230, 410, 165, 60, 64, 64, 0, 0],
         }
         ihap_df = pd.DataFrame(ihap)
         ihap_df = ihap_df.set_index("Stove Type")
