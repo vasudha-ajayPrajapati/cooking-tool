@@ -361,15 +361,18 @@ if language_select=="Hindi":
                     new_list.append(item)
             return new_list
 
+        # recalibrate quantity of food
         less = 0.75
         equ = 1
         more = 1.5
         new_people_list = replace_numbers(no_of_people, less, more, equ)
+        
+        # recalibrate time as per no. of people selected
         less = 0.8
         equ = 1
         more = 1.2
-
         new_time_list = replace_time_numbers(no_of_people, less, more, equ)
+        
         df["लोगों की संख्या"] = new_people_list
         df["new time"] = new_time_list
         df['कुल मात्रा (ग्राम)'] = df['मात्रा (ग्राम)'] * df['लोगों की संख्या']
@@ -917,7 +920,7 @@ else:
             # Create a form
             with st.form("my_form"):
                 # Create a column for items
-                quantity_bf = st.number_input('For no. of people', value =1, step =1 , format = "%d")
+                quantity_bf = st.number_input('For no. of people', min_value = 1, max_value = 10, value =1, step =1 , format = "%d")
                 items_column = st.multiselect("Dishes", items)
                 # Create a column for the quantity
                 quantities = {}
@@ -942,7 +945,7 @@ else:
             # Create a form
             with st.form("my_form_lunch"):
                 # Create a column for items
-                quantity_lunch =  st.number_input('For no. of people', value =1, step =1 , format = "%d")
+                quantity_lunch =  st.number_input('For no. of people', min_value = 1, max_value = 10, value =1, step =1 , format = "%d")
                 items_column = st.multiselect("Dishes", items)
                 # Create a column for the quantity
                 quantities = {}
@@ -967,7 +970,7 @@ else:
             # Create a form
             with st.form("my_form_dinner"):
                 # Create a column for items
-                quantity_dinner =  st.number_input('For no. of people', value =1, step =1 , format = "%d")
+                quantity_dinner =  st.number_input('For no. of people', min_value = 1, max_value = 10, value =1, step =1 , format = "%d")
                 items_column = st.multiselect("Dishes", items)
                 # Create a column for the quantity
                 quantities = {}
@@ -993,7 +996,7 @@ else:
             # Create a form
             with st.form("my_form_snacks"):
                 # Create a column for items
-                quantity_snacks =  st.number_input('For no. of people', value =1, step =1 , format = "%d")
+                quantity_snacks =  st.number_input('For no. of people', min_value = 1, max_value = 10, value =1, step =1 , format = "%d")
                 items_column = st.multiselect("Dishes", items)
                 # Create a column for the quantity
                 quantities = {}
