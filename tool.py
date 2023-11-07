@@ -1333,12 +1333,12 @@ else:
                     'Annual opex savings (INR)' : ['NA', f"{(current_cost_annual - Grid_electricity_cost_annual):,.0f}",  f"{(current_cost_annual - Solar_rooftop_cost_annual):,.0f}",
                                                     f"{(current_cost_annual - LPG_cost_annual):,.0f}",  f"{(current_cost_annual - PNG_cost_annual):,.0f}",  f"{(current_cost_annual - Biogas_cost_annual):,.0f}",
                                                         f"{(current_cost_annual - Biomass_cost_annual):,.0f}"],
-                    'Payback period (years)': ['NA','NA' if Grid_electricity_pbp > 15 or Grid_electricity_pbp < 0 else f"{Grid_electricity_pbp:,.0f}",
-                                    'NA' if Solar_rooftop_pbp > 15 or Solar_rooftop_pbp < 0 else f"{Solar_rooftop_pbp:,.0f}",
-                                    'NA' if LPG_pbp > 15 or  LPG_pbp <0 else f"{LPG_pbp:,.0f}",
-                                    'NA' if PNG_pbp > 15 or PNG_pbp < 0 else f"{PNG_pbp:,.0f}",
-                                    'NA' if Biogas_pbp > 15 or Biogas_pbp < 0 else f"{Biogas_pbp:,.0f}",
-                                    'NA' if Biomass_pbp > 15 or Biomass_pbp < 0 else f"{Biomass_pbp:,.0f}"]
+                    'Payback period (years)': ['NA','NA' if Grid_electricity_pbp > 10 or Grid_electricity_pbp < 0 else f"{Grid_electricity_pbp:,.0f}",
+                                    'NA' if Solar_rooftop_pbp > 10 or Solar_rooftop_pbp < 0 else f"{Solar_rooftop_pbp:,.0f}",
+                                    'NA' if LPG_pbp > 10 or  LPG_pbp <0 else f"{LPG_pbp:,.0f}",
+                                    'NA' if PNG_pbp > 10 or PNG_pbp < 0 else f"{PNG_pbp:,.0f}",
+                                    'NA' if Biogas_pbp > 10 or Biogas_pbp < 0 else f"{Biogas_pbp:,.0f}",
+                                    'NA' if Biomass_pbp > 10 or Biomass_pbp < 0 else f"{Biomass_pbp:,.0f}"]
                 }
                 df = pd.DataFrame(data)
 
@@ -1384,5 +1384,5 @@ else:
                 - In the results comparison of grid based electric induction cooktops, two cooktops are assumed.
                 - Capex cost is assumed based on secondary research of available cookstove options in the market and through schemes.
                 - Cost of solar cookstove does not include battery storage.
-                - Payback period is shown only if it is below 15 years. "NA" is used for payback periods above 15 years or negative payback periods.
+                - Payback period is shown only if it is below 10 years. "NA" is used for payback periods above 15 years or negative payback periods.
                 ''')
