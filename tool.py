@@ -837,9 +837,11 @@ else:
         
         st.subheader('Annual Income of HH')
         income = {
-        'Area Type': ['Rural','Rural','Rural','Urban','Urban','Urban'],
-        'Socio-economic status': ['Lower','Middle','Higher','Lower','Middle','Higher'],
-        'Annual Income (INR)': ['₹ 2,00,000','₹ 5,70,000','₹ 9,00,000','₹ 2,50,000','₹ 7,12,500','₹ 11,25,000']
+        'Area Type': ['Rural','Rural','Rural','Rural','Urban','Urban','Urban','Urban'],
+        'Socio-economic status': ['BoP','Lower','Middle','Higher','BoP','Lower','Middle','Higher'],
+        'Annual Income (INR)': ['Less than ₹2,00,000', 'Over ₹2,00,000 but less than ₹5,70,000', 'Over ₹5,70,000 but less than ₹9,00,000', 
+                                'More than ₹9,00,000', 'Less than ₹2,50,000', 'Over ₹2,50,000 but less than ₹7,12,500', 'Over ₹7,12,500 but less than ₹11,25,000', 
+                                'More than ₹11,25,000']
         }
         income_df = pd.DataFrame(income)
         income_df = income_df.set_index('Area Type')
