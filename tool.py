@@ -1307,9 +1307,8 @@ else:
                     st.metric('Biomass', f"{Biomass_emission_annual:,.0f}",)
 
             with st.container():
-                # Sample data
                 data = {
-                    'Unit cost (INR/kWh)': [f"{(current_cost/total_energy_user)/30:,.2f}", f"{electricity_tariff:,.2f}", f"{0:,.2f}", 6.38, 5.86, f"{1.5:,.2f}",1.32],
+                    'Unit cost (INR/kWh)': [f"{(current_cost/total_energy_user)/30:,.2f}", f"{electricity_tariff:,.2f}", f"{0:,.2f}", 4.98, 4.77, f"{1.5:,.2f}",1.32],
                     'Total operating cost for cooking (INR/month)': [f"{current_cost:,.0f}", f"{Grid_electricity_cost:,.0f}", f"{monthly_payment_solar:,.0f}",
                                                                     f"{LPG_cost:,.0f}", f"{PNG_cost:,.0f}", f"{(biogas_monthly_payment+Biogas_cost):,.0f}", f"{Biomass_cost:,.0f}"],
                     'Percentage of cooking expenses with monthly income (%)': [f"{(current_cost/monthly_income):,.2%}", f"{(Grid_electricity_cost/monthly_income):,.2%}", 
@@ -1374,9 +1373,9 @@ else:
                     df_filtered.rename(columns={'cooking stoves': 'Cooking Method'}, inplace=True)
                     df_filtered.reset_index()
                     df_filtered = df_filtered.set_index('Cooking Method')
+                    
                     # Display DataFrame as a table
                     st.dataframe(df_filtered)
-
                     # Save DataFrame as CSV
                     csv_data = df_filtered.to_csv(index=True)
                     st.download_button("Download CSV", data=csv_data, file_name="filtered_data.csv", mime="text/csv")
@@ -1389,5 +1388,5 @@ else:
                 - In the results comparison of grid based electric induction cooktops, two cooktops are assumed.
                 - Capex cost is assumed based on secondary research of available cookstove options in the market and through schemes.
                 - Cost of solar cookstove does not include battery storage.
-                - Payback period is shown only if it is below 10 years. "NA" is used for payback periods above 15 years or negative payback periods.
+                - Payback period is shown only if it is below 10 years. "NA" is used for payback periods above 10 years or negative payback periods.
                 ''')
