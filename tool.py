@@ -208,7 +208,7 @@ if language_select=="Hindi":
             # Create a form
             with st.form("my_form"):
                 # Create a column for items
-                quantity_bf = st.number_input('लोगों की संख्या', value =1, step =1 , format = "%d")
+                quantity_bf = st.number_input('लोगों की संख्या', value = 1, step = 1, format = "%d")
                 items_column = st.multiselect("व्यंजन", items)
                 # Create a column for the quantity
                 quantities = {}
@@ -372,7 +372,7 @@ if language_select=="Hindi":
         equ = 1
         more = 1.2
         new_time_list = replace_time_numbers(no_of_people, less, more, equ)
-        
+
         df["लोगों की संख्या"] = new_people_list
         df["new time"] = new_time_list
         df['कुल मात्रा (ग्राम)'] = df['मात्रा (ग्राम)'] * df['लोगों की संख्या']
@@ -402,6 +402,8 @@ if language_select=="Hindi":
         stove_file1=stove_file[stove_file["क्षेत्र"] == area_select]
         stove_file1=stove_file1[stove_file1["सामाजिक-आर्थिक"] == category]
 
+        
+        
         #########Grid_Electricity#########
         Grid_electricity_data = stove_file1[stove_file1["ईंधन"] == 'ग्रिड बिजली']
 
@@ -1383,7 +1385,7 @@ else:
                 st.markdown('''
                 - The values for biomass stoves in the result comparison pertains to forced draft biomass stove variants.
                 - For indoor solar cooking solution and biogas, the upfront cookstove and equipment cost is 5% of the total device cost.
-                - The rest of the amount for indoor solar cooking soluton and biogas is shown as monthly operating cost based on the interest rate and tenure. 
+                - The rest of the amount for indoor solar cooking solution and biogas is shown as monthly operating cost based on the interest rate and tenure. 
                 - In the results comparison of grid based electric induction cooktops, two cooktops are assumed.
                 - Capex cost is assumed based on secondary research of available cookstove options in the market and through schemes.
                 - Cost of solar cookstove does not include battery storage.
